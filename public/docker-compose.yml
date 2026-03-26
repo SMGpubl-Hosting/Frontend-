@@ -1,0 +1,20 @@
+version: '3.9'
+services:
+  api:
+    build: ./apps/api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: smgpub
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
