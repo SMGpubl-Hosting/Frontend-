@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Panel | SMGPUB℠</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <h1>SMGPUB Platform</h1>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">SMGPUB Admin</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="marketplace.html">Marketplace</a>
+  </nav>
+</header>
+
+<!-- ADD PRODUCT -->
+<section style="max-width:700px; margin:auto;">
+  <h2>Add Product</h2>
+
+  <input id="name" ="Product Name">
+  <input id="price" ="Price (USD)">
+  <input id="desc" ="Description">
+
+  <label>Upload Audio</label>
+  <input type="file" id="audio">
+
+  <label>Upload Image</label>
+  <input type="file" id="image">
+
+  <button class="btn" onclick="addProduct()">Upload Product</button>
+</section>
+
+<!-- PRODUCT LIST -->
+<section>
+  <h2 style="text-align:center;">Manage Products</h2>
+
+  <div id="products" class="grid"></div>
+</section>
+
+<!-- SCRIPT -->
+<script>
+
+// LOAD PRODUCTS
+async function loadProducts(){
+  try {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+
+    document.getElementById("products").innerHTML =
+      products.map(p => `
+        <div class="card">
+
+          ${p.image ? `<img src="${p.image}" style="width:100%; border-radius:10px;">` : ''}
+
+          <h3>${p.name}</h3>
+          <p>$${(p.price/100).toFixed(2)}</p>
+          <p>${p.description || ''}</p>
+
+          <button class="btn" onclick="deleteProduct('${p._id}')">
+            Delete
+          </button>
+
+        </div>
+      `).join("");
+
+  } catch(err){
+    console.error(err);
+  }
+}
+
+// ADD PRODUCT WITH FILES
+async function addProduct(){
+
+  const formData = new FormData();
+
+  formData.append("name", document.getElementById("name").value);
+  formData.append("price", document.getElementById("price").value * 100);
+  formData.append("description", document.getElementById("desc").value);
+
+  const audioFile = document.getElementById("audio").files[0];
+  const imageFile = document.getElementById("image").files[0];
+
+  if(audioFile) formData.append("audio", audioFile);
+  if(imageFile) formData.append("image", imageFile);
+
+  try {
+    await fetch('/api/products/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    alert("Product uploaded successfully!");
+    loadProducts();
+
+  } catch(err){
+    console.error(err);
+    alert("Upload failed");
+  }
+}
+
+// DELETE PRODUCT
+async function deleteProduct(id){
+  if(!confirm("Delete this product?")) return;
+
+  await fetch('/api/products/' + id, {
+    method: 'DELETE'
+  });
+
+  loadProducts();
+}
+
+// INIT
+loadProducts();
+
+</script>
+
+</body>
+</html>

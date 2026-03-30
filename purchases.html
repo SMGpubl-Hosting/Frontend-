@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Purchases | SMGPUB℠</title>
+
+<style>
+body{background:#0a0a0f;color:#fff;font-family:sans-serif}
+header{padding:20px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:20px}
+.card{background:#12121a;padding:20px;border-radius:10px}
+.btn{background:#d4af37;color:#000;padding:10px;border:none;margin-top:10px;display:block;text-align:center;text-decoration:none}
+audio{width:100%;margin-top:10px}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <h1>My Purchases</h1>
+  <p>Download your beats and licenses</p>
+</header>
+
+<section>
+  <div id="purchases" class="grid"></div>
+</section>
+
+<script>
+
+// LOAD USER PURCHASES
+async function loadPurchases(){
+
+  const res = await fetch('/api/purchases', {
+    headers: {
+      Authorization: localStorage.getItem("token")
+    }
+  });
+
+  const purchases = await res.json();
+
+  document.getElementById("purchases").innerHTML =
+    purchases.map(p => `
+      <div class="card">
+
+        <h3>${p.productName}</h3>
+
+        <audio controls>
+          <source src="${p.audio}">
+        </audio>
+
+        <p>License: ${p.licenseType}</p>
+
+        <a href="${p.audio}" class="btn" download>
+          Download Beat
+        </a>
+
+        <a href="/api/license/${p._id}" class="btn">
+          Download License PDF
+        </a>
+
+      </div>
+    `).join("");
+
+}
+
+loadPurchases();
+
+</script>
+
+</body>
+</html>

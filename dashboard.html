@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | SMGPUB℠</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">SMGPUB Creator</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="beats.html">Catalog</a>
+    <a href="upload.html">Upload</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Your Creator Dashboard</h1>
+  <p>Manage your beats, track earnings, and grow your catalog</p>
+</section>
+
+<!-- STATS -->
+<section>
+  <div class="grid">
+
+    <div class="card">
+      <h3>Total Earnings</h3>
+      <p id="earnings">$0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Sales</h3>
+      <p id="sales">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Your Beats</h3>
+      <p id="count">0</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- USER BEATS -->
+<section>
+  <h2>Your Uploaded Beats</h2>
+
+  <div id="myBeats" class="grid"></div>
+</section>
+
+<!-- SCRIPT -->
+<script>
+
+async function loadDashboard(){
+  try {
+    const res = await fetch('/api/my-products');
+    const data = await res.json();
+
+    document.getElementById("count").innerText = data.length;
+
+    let totalSales = 0;
+    let totalEarnings = 0;
+
+    document.getElementById("myBeats").innerHTML =
+      data.map(b => {
+
+        totalSales += b.sales || 0;
+        totalEarnings += (b.sales || 0) * (b.price || 0);
+
+        return `
+          <div class="card">
+
+            ${b.image ? `<img src="${b.image}" style="width:100%">` : ''}
+
+            <h3>${b.name}</h3>
+
+            <audio controls>
+              <source src="${b.audio}">
+            </audio>
+
+            <p>$${(b.price/100).toFixed(2)}</p>
+
+          </div>
+        `;
+      }).join("");
+
+    document.getElementById("sales").innerText = totalSales;
+    document.getElementById("earnings").innerText = "$" + (totalEarnings/100).toFixed(2);
+
+  } catch(err){
+    console.error(err);
+  }
+}
+
+loadDashboard();
+
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 SMGPUB℠ — Summers Media Group</p>
+</footer>
+
+</body>
+</html>

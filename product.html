@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SMGPUB Product</title>
+
+<style>
+body{margin:0;background:#0a0a0f;color:#fff;font-family:sans-serif}
+.container{max-width:1100px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.cover{width:100%;border-radius:12px}
+audio{width:100%;margin-top:15px}
+.title{font-size:28px;font-weight:bold}
+.badges span{margin-right:10px;background:#222;padding:5px 10px;border-radius:6px}
+.creator{color:#aaa;margin-top:5px}
+.desc{margin-top:15px;color:#ccc}
+.pricing{margin-top:25px;display:flex;flex-direction:column;gap:15px}
+.plan{background:#12121a;padding:15px;border-radius:10px;border:1px solid #222}
+.plan.best{border:2px solid #d4af37}
+.price{font-size:22px;color:#d4af37}
+.btn{margin-top:10px;background:#d4af37;color:#000;padding:10px;border:none;width:100%;cursor:pointer;border-radius:6px}
+.section{margin-top:50px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.card{background:#12121a;padding:15px;border-radius:10px;text-align:center}
+.trust{margin-top:20px;color:#aaa;text-align:center}
+</style>
+</head>
+
+<body>
+    <h1>SMGPUB Platform</h1>
+
+<div class="container">
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div>
+      <img id="cover" class="cover">
+      <audio id="player" controls></audio>
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+      <div id="title" class="title"></div>
+      <div id="badges" class="badges"></div>
+      <div id="creator" class="creator"></div>
+      <div id="desc" class="desc"></div>
+
+      <div class="pricing">
+
+        <div class="plan">
+          <div>Basic License</div>
+          <div class="price">$29</div>
+          <button class="btn" onclick="buy('basic')">Buy</button>
+        </div>
+
+        <div class="plan best">
+          <div>Premium (Best Value)</div>
+          <div class="price">$79</div>
+          <button class="btn" onclick="buy('premium')">Buy</button>
+        </div>
+
+        <div class="plan">
+          <div>Exclusive</div>
+          <div class="price">$199</div>
+          <button class="btn" onclick="buy('exclusive')">Buy</button>
+        </div>
+
+      </div>
+
+      <div class="trust">
+        ✔ Secure checkout • Instant download • License included
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="section">
+    <h2>Reviews</h2>
+    <div id="reviews" class="cards"></div>
+  </div>
+
+  <!-- RELATED -->
+  <div class="section">
+    <h2>Related Beats</h2>
+    <div id="related" class="cards"></div>
+  </div>
+
+</div>
+
+<script>
+
+const productId = new URLSearchParams(location.search).get("id");
+
+// LOAD PRODUCT
+async function load(){
+
+  const res = await fetch('/api/products/'+productId);
+  const p = await res.json();
+
+  document.getElementById("title").innerText = p.name;
+  document.getElementById("creator").innerText = "By " + (p.creator || "SMGPUB");
+  document.getElementById("desc").innerText = p.description || "";
+  document.getElementById("player").src = p.audio;
+  document.getElementById("cover").src = p.image || "";
+
+  // BADGES
+  let badges = "";
+
+  if(p.sales > 20) badges += "<span>👑 Best Seller</span>";
+  if(p.plays > 100) badges += "<span>🔥 Trending</span>";
+
+  document.getElementById("badges").innerHTML = badges;
+
+  // PLAY TRACKING
+  document.getElementById("player").addEventListener("play", ()=>{
+    fetch('/api/play/' + productId, { method:'POST' });
+  });
+
+}
+
+// BUY
+async function buy(type){
+  const res = await fetch('/api/stripe/checkout',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ productId, licenseType:type })
+  });
+
+  const data = await res.json();
+  location.href = data.url;
+}
+
+// REVIEWS
+async function loadReviews(){
+  const res = await fetch('/api/reviews?productId='+productId);
+  const reviews = await res.json();
+
+  document.getElementById("reviews").innerHTML =
+    reviews.map(r=>`
+      <div class="card">
+        ⭐ ${r.rating}/5
+        <p>${r.comment}</p>
+      </div>
+    `).join("");
+}
+
+// RELATED
+async function loadRelated(){
+  const res = await fetch('/api/products');
+  const data = await res.json();
+
+  const related = data.filter(p=>p._id!==productId).slice(0,4);
+
+  document.getElementById("related").innerHTML =
+    related.map(r=>`
+      <div class="card">
+        <h4>${r.name}</h4>
+        <audio controls src="${r.audio}"></audio>
+        <button class="btn" onclick="go('${r._id}')">View</button>
+      </div>
+    `).join("");
+}
+
+function go(id){
+  location.href="product.html?id="+id;
+}
+
+// INIT
+load();
+loadReviews();
+loadRelated();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Catalog | SMGPUB℠</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">SMGPUB℠</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="beats.html">Catalog</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="upload.html">Upload</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Music Catalog</h1>
+  <p>Discover beats from creators worldwide</p>
+</section>
+
+<!-- BEATS GRID -->
+<section>
+  <div id="beats" class="grid"></div>
+</section>
+
+<!-- SCRIPT -->
+<script>
+
+async function loadBeats(){
+  try {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+
+    // FILTER ONLY BEATS (HAS AUDIO)
+    const beats = products.filter(p => p.audio);
+
+    document.getElementById("beats").innerHTML =
+      beats.map(b => `
+        <div class="card">
+
+          ${b.image ? `<img src="${b.image}" style="width:100%; border-radius:10px;">` : ''}
+
+          <h3>${b.name}</h3>
+
+          <p style="color: var(--muted);">
+            Artist: ${b.creator || 'SMGPUB'}
+          </p>
+
+          <audio controls>
+            <source src="${b.audio}" type="audio/mpeg">
+          </audio>
+
+          <p class="price">$${(b.price/100).toFixed(2)}</p>
+
+          <button class="btn" onclick="buy('${b._id}')">
+            Buy License
+          </button>
+
+        </div>
+      `).join("");
+
+  } catch(err){
+    console.error(err);
+    document.getElementById("beats").innerHTML = "<p>Error loading beats</p>";
+  }
+}
+
+async function buy(id){
+  const res = await fetch('/api/stripe/checkout', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ productId:id })
+  });
+
+  const data = await res.json();
+  if(data.url) window.location.href = data.url;
+}
+
+loadBeats();
+
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 SMGPUB℠ — Summers Media Group</p>
+</footer>
+
+</body>
+</html>

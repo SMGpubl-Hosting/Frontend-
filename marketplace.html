@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marketplace | SMGPUB℠</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">SMGPUB℠</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="beats.html">Catalog</a>
+    <a href="news.html">News</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="upload.html">Upload</a>
+    <a href="login.html" class="btn">Login</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>SMGPUB Marketplace</h1>
+  <p>Browse and purchase digital products, kits, and licensing tools</p>
+</section>
+
+<!-- PRODUCTS -->
+<section>
+  <h2>Available Products</h2>
+
+  <div id="products" class="grid"></div>
+</section>
+
+<!-- CTA -->
+<section style="text-align:center;">
+  <h2>Sell Your Own Products</h2>
+  <p style="color: var(--muted);">
+    Upload your beats, kits, and templates to start earning
+  </p>
+
+  <a href="upload.html" class="btn">Upload Product</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 SMGPUB℠ — Summers Media Group</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+async function loadProducts(){
+  try {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+
+    document.getElementById("products").innerHTML =
+      products.map(p => `
+        <div class="card">
+          <h3>${p.name}</h3>
+          <p class="price">$${(p.price/100).toFixed(2)}</p>
+          <p>${p.description || ''}</p>
+
+          <button class="btn" onclick="buy('${p._id}')">
+            Buy Now
+          </button>
+        </div>
+      `).join("");
+
+  } catch(err){
+    console.error(err);
+    document.getElementById("products").innerHTML =
+      "<p>Failed to load products</p>";
+  }
+}
+
+async function buy(productId){
+  try {
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ productId })
+    });
+
+    const data = await res.json();
+
+    if(data.url){
+      window.location.href = data.url;
+    } else {
+      alert("Checkout not configured");
+    }
+
+  } catch(err){
+    console.error(err);
+    alert("Error processing payment");
+  }
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
