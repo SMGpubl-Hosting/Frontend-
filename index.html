@@ -1,107 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="description" content="SMGPUB — Music publishing platform, beat licensing, and digital creator tools.">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SMGPUB℠ | Music Publishing, Licensing & Marketplace</title>
+<title>SMGPUB℠ | Music Publishing Platform</title>
 
-<link rel="stylesheet" href="css/style.css">
+<meta name="description" content="SMGPUB℠ — Music publishing, beat licensing, distribution, and creator services platform.">
+
+<style>
+:root{
+--bg:#0B0C14;
+--panel:#12131F;
+--primary:#3CD1FF;
+--accent:#D75CFF;
+--accent2:#00FFB3;
+--text:#EAEFFF;
+--muted:#9BA4B9;
+--stroke:#1C1E2C;
+--radius:14px;
+--shadow:0 12px 30px rgba(0,0,0,.4);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:Arial, sans-serif;
+background:var(--bg);
+color:var(--text);
+line-height:1.6;
+}
+
+/* Header */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:var(--panel);
+border-bottom:1px solid var(--stroke);
+}
+
+.logo{
+font-weight:900;
+color:var(--primary);
+font-size:20px;
+}
+
+nav a{
+margin-left:20px;
+color:var(--text);
+text-decoration:none;
+font-weight:600;
+}
+
+nav a:hover{color:var(--primary);}
+
+/* Hero */
+.hero{
+text-align:center;
+padding:100px 20px;
+}
+
+.hero h1{
+font-size:clamp(2.5rem,6vw,4rem);
+text-shadow:0 0 12px var(--primary);
+}
+
+.hero p{
+max-width:700px;
+margin:20px auto;
+color:var(--muted);
+}
+
+/* Buttons */
+.btn{
+background:linear-gradient(90deg,var(--primary),var(--accent2));
+color:#000;
+padding:12px 24px;
+border:none;
+border-radius:10px;
+font-weight:800;
+cursor:pointer;
+margin:10px;
+transition:0.25s;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+opacity:.9;
+}
+
+/* Grid */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+padding:40px;
+}
+
+/* Cards */
+.card{
+background:var(--panel);
+border:1px solid var(--stroke);
+border-radius:var(--radius);
+padding:20px;
+box-shadow:var(--shadow);
+}
+
+.card h3{margin-bottom:10px;}
+
+/* Audio */
+audio{
+width:100%;
+margin:10px 0;
+filter:invert(100%) hue-rotate(180deg);
+}
+
+/* Dashboard */
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.stat{
+background:var(--panel);
+padding:20px;
+border-radius:var(--radius);
+text-align:center;
+border:1px solid var(--stroke);
+}
+
+/* Checkout */
+.checkout{
+background:var(--panel);
+padding:30px;
+margin:40px;
+border-radius:var(--radius);
+border:1px solid var(--stroke);
+}
+
+/* Footer */
+footer{
+text-align:center;
+padding:40px;
+color:var(--muted);
+border-top:1px solid var(--stroke);
+}
+
+/* Responsive */
+@media(max-width:768px){
+header{flex-direction:column;gap:10px;}
+nav{flex-wrap:wrap;text-align:center;}
+}
+</style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header>
-  <div class="logo">SMGPUB℠</div>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="beats.html">Catalog</a>
-    <a href="news.html">News</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="upload.html">Upload</a>
-    <a href="login.html" class="btn">Login</a>
-  </nav>
+<div class="logo">SMGPUB℠</div>
+<nav>
+<a href="#">Home</a>
+<a href="#">Beats</a>
+<a href="#">Pricing</a>
+<a href="#">Dashboard</a>
+<a href="#">Login</a>
+</nav>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-  <h1>
-    Music Publishing <br>
-    <span>& Licensing Platform</span>
-  </h1>
-
-  <p>
-    Distribute, license, and monetize your music with a full-service
-    publishing and marketplace system built for creators and media professionals.
-  </p>
-
-  <div style="margin-top:20px;">
-    <a href="marketplace.html" class="btn">Explore Marketplace</a>
-    <a href="upload.html" class="btn outline">Upload Music</a>
-  </div>
+<h1>Music Publishing Done Right</h1>
+<p>
+Publish, license, distribute, and monetize your music with SMGPUB℠.
+Built for creators, producers, and labels.
+</p>
+<button class="btn">Start Membership</button>
+<button class="btn">Browse Beats</button>
 </section>
 
 <!-- SERVICES -->
-<section>
-  <h2 style="text-align:center;">Publishing & Media Services</h2>
+<section class="grid">
+<div class="card">
+<h3>Publishing</h3>
+<p>Register songs and collect royalties worldwide.</p>
+</div>
 
-  <div class="grid">
+<div class="card">
+<h3>Licensing</h3>
+<p>Sell beats and sync licenses with automated contracts.</p>
+</div>
 
-    <div class="card">
-      <h3>Publishing Administration</h3>
-      <p>Register works, manage rights, and collect royalties globally.</p>
-    </div>
-
-    <div class="card">
-      <h3>Licensing & Sync</h3>
-      <p>Place your music in film, TV, and commercial opportunities.</p>
-    </div>
-
-    <div class="card">
-      <h3>Marketplace</h3>
-      <p>Sell beats, licenses, and digital products worldwide.</p>
-    </div>
-
-  </div>
+<div class="card">
+<h3>Distribution</h3>
+<p>Release your music globally across streaming platforms.</p>
+</div>
 </section>
 
-<!-- FEATURED MARKETPLACE -->
-<section>
-  <h2 style="text-align:center;">Featured Marketplace</h2>
+<!-- BEATS -->
+<section class="grid">
+<div class="card">
+<h3>Night Shift</h3>
+<audio controls></audio>
+<button class="btn">Buy License - $49.99</button>
+</div>
 
-  <div class="grid">
-
-    <div class="card">
-      <h3>Trap Beat</h3>
-      <p>$49 License</p>
-      <a href="beats.html" class="btn">Buy License</a>
-    </div>
-
-    <div class="card">
-      <h3>LoFi Pack</h3>
-      <p>$29 Pack</p>
-      <a href="marketplace.html" class="btn">Shop Now</a>
-    </div>
-
-  </div>
+<div class="card">
+<h3>Blue Hour</h3>
+<audio controls></audio>
+<button class="btn">Buy License - $39.99</button>
+</div>
 </section>
 
-<!-- DASHBOARD CTA -->
-<section style="text-align:center; padding:60px 20px;">
-  <h2>Manage Your Music Business</h2>
-  <p>Access your dashboard to track royalties, uploads, and sales.</p>
+<!-- PRICING -->
+<section class="grid">
+<div class="card">
+<h3>Starter</h3>
+<p>$89/month</p>
+<button class="btn">Subscribe</button>
+</div>
 
-  <a href="dashboard.html" class="btn">Enter Dashboard</a>
+<div class="card">
+<h3>Pro</h3>
+<p>$149/month</p>
+<button class="btn">Subscribe</button>
+</div>
 </section>
 
-<!-- FOOTER -->
+<!-- DASHBOARD PREVIEW -->
+<section class="dashboard">
+<div class="stat">
+<h3>$1,248</h3>
+<p>Earnings</p>
+</div>
+
+<div class="stat">
+<h3>42</h3>
+<p>Tracks</p>
+</div>
+
+<div class="stat">
+<h3>18</h3>
+<p>Sales</p>
+</div>
+</section>
+
+<!-- CHECKOUT -->
+<section class="checkout">
+<h2>Secure Checkout</h2>
+<p>Powered by Stripe for safe and fast payments.</p>
+<button class="btn">Proceed to Payment</button>
+</section>
+
 <footer>
-  <p>© 2026 SMGPUB℠ — Summers Media Group</p>
+© <span id="year"></span> SMGPUB℠ — Summers Media Group
 </footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>
